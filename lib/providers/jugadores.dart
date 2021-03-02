@@ -5,6 +5,21 @@ class Jugadores with ChangeNotifier {
    String _player1;
    String _player2;
    String _champion = '';
+   bool _first=true;
+   bool _cruz = true;
+
+   bool get cruz => _cruz;
+   bool get first => _first;
+
+   set cruz(final bool value){
+     _cruz=value;
+     notifyListeners();
+   }
+   set first(final bool value){
+     _first=value;
+     notifyListeners();
+   }
+
 
    String get player1 => _player1;
 

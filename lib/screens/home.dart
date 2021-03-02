@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gato/providers/jugadores.dart';
 import 'package:gato/screens/firstPlayer.dart';
+import 'package:gato/screens/game.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +39,21 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   "Cambiar alias",
+                  style: GoogleFonts.arvo(fontSize: 30),
+                ),
+              ),
+            ),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Game()),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Iniciar juego",
                   style: GoogleFonts.arvo(fontSize: 30),
                 ),
               ),
