@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gato/otros/fondo.dart';
 import 'package:gato/providers/jugadores.dart';
 import 'package:gato/screens/home.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,51 +16,55 @@ class _SecondPlayerState extends State<SecondPlayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-              child: Text(
-            'Jugador 2',
-            style: GoogleFonts.raviPrakash(fontSize: 68),
-          )),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _player2Controller,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'alias del jugador 2'),
+      body: CustomPaint(
+        painter: BluePainter(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+                child: Text(
+              'Jugador 2',
+              style: GoogleFonts.raviPrakash(fontSize: 68, color: Color(0xFF990000)),
+            )),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _player2Controller,
+                  cursorColor: Colors.red,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'alias del jugador 2'),
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 35),
-            child: Center(
-              child: OutlinedButton(
-                onPressed: () {
-                  if (_player2Controller.text.isNotEmpty) {
-                    Provider.of<Jugadores>(context, listen: false).player2 =
-                        _player2Controller.text;
-                  } else {
-                    Provider.of<Jugadores>(context, listen: false).player2 =
-                    'Jugador 2';
-                  }
+            Padding(
+              padding: const EdgeInsets.only(top: 35),
+              child: Center(
+                child: OutlinedButton(
+                  onPressed: () {
+                    if (_player2Controller.text.isNotEmpty) {
+                      Provider.of<Jugadores>(context, listen: false).player2 =
+                          _player2Controller.text;
+                    } else {
+                      Provider.of<Jugadores>(context, listen: false).player2 =
+                      'Jugador 2';
+                    }
 
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Continuar", style: GoogleFonts.arvo(fontSize: 30),),
-                ),
-              )
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Home()),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Continuar", style: GoogleFonts.arvo(fontSize: 30, color: Color(0xFF990000), fontWeight: FontWeight.w700),),
+                  ),
+                )
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -32,6 +32,13 @@ dependencies:
   google_fonts: ^1.1.2
   flip_card: ^0.4.4
   font_awesome_flutter: ^8.11.0
+  flutter_launcher_icons: ^0.8.1
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_ios: "assets/logo.png"
+  image_path_android: "assets/logo.png"
 
 dev_dependencies:
   flutter_test:
