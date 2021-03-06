@@ -18,6 +18,27 @@ class Game extends StatelessWidget {
   GlobalKey<FlipCardState> cardKey8 = GlobalKey<FlipCardState>();
   List<int> cruz = [];
   List<int> circulo = [];
+
+
+  /*
+     0   1   2
+     3   4   5
+     6   7   8
+
+   */
+
+  List<List<int>> combinaciones = [
+    [0,1,2],
+    [0,3,6],
+    [6,7,8],
+    [2,5,8],
+    [0,4,8],
+    [6,4,2],
+    [3,4,5],
+    [1,4,7]
+  ];
+
+
   List<BoxDecoration> cards = [
     BoxDecoration(
       //borderRadius: BorderRadius.circular(10),
@@ -185,6 +206,70 @@ class Game extends StatelessWidget {
                               } else {
                                 circulo.add(index);
                               }
+                              print(cruz);
+                              int winCruz = 0;
+                              bool winCru = false;
+                              int winCirculo = 0;
+                              bool winCir = false;
+                              for (var x in combinaciones){
+                                for (var y in x){
+                                  if(cruz.contains(y)){
+                                    winCruz = winCruz + 1;
+                                  }
+                                  if(circulo.contains(y)){
+                                    winCirculo = winCirculo + 1;
+                                  }
+                                }
+                                if(winCruz>=3){
+                                  winCru = true;
+                                }
+                                if(winCirculo>=3){
+                                  winCir = true;
+                                }
+                                winCruz = 0;
+                                winCirculo = 0;
+
+                              }
+
+                              if(winCru){
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context, builder:(context)=>AlertDialog(
+                                  title: Text("El ganador es: "+context.read<Jugadores>().player1),
+                                  actions: [
+                                    TextButton(onPressed: (){
+                                      cruz.clear();
+                                      circulo.clear();
+                                      Navigator.of(context).pop();
+                                      flips.forEach((element) {
+                                        if(!element.currentState.isFront){
+                                          element.currentState.toggleCard();
+                                        }
+                                      });
+                                    }, child: Text("Reiniciar"))
+                                  ],
+                                ));
+                              }
+                              if(winCir){
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context, builder:(context)=>AlertDialog(
+                                  title: Text("El ganador es: "+context.read<Jugadores>().player2),
+                                  actions: [
+                                    TextButton(onPressed: (){
+                                      cruz.clear();
+                                      circulo.clear();
+
+                                      Navigator.of(context).pop();
+                                      flips.forEach((element) {
+                                        if(!element.currentState.isFront){
+                                          element.currentState.toggleCard();
+                                        }
+                                      });
+                                    }, child: Text("Reiniciar"))
+                                  ],
+                                ));
+                              }
 
                               context.read<Jugadores>().first =
                                   !context.read<Jugadores>().first;
@@ -235,8 +320,13 @@ class Game extends StatelessWidget {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            cruz = null;
-                            circulo = null;
+                            cruz.clear();
+                            circulo.clear();
+                            flips.forEach((element) {
+                              if(!element.currentState.isFront){
+                                element.currentState.toggleCard();
+                              }
+                            });
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
