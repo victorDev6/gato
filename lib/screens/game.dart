@@ -19,11 +19,11 @@ class Game extends StatelessWidget {
   List<int> cruz = [];
   List<int> circulo = [];
 
+
   /*
      0   1   2
      3   4   5
      6   7   8
-
    */
 
   List<List<int>> combinaciones = [
@@ -141,6 +141,16 @@ class Game extends StatelessWidget {
   ];
 
   @override
+  void paint(Canvas canvas, Size size) {
+    final p1 = Offset(50, 50);
+    final p2 = Offset(250, 150);
+    final paint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 4;
+    canvas.drawLine(p1, p2, paint);
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<GlobalKey<FlipCardState>> flips = [
       cardKey0,
@@ -170,23 +180,23 @@ class Game extends StatelessWidget {
                         selector: (_, first) => first.first,
                         builder: (context, first, __) => first
                             ? Text(
-                                "Turno de: " +
-                                    context.read<Jugadores>().player1,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.tomorrow(
-                                    fontSize: 30,
-                                    color: Color(0xFF990000),
-                                    fontWeight: FontWeight.w500),
-                              )
+                          "Turno de: " +
+                              context.read<Jugadores>().player1,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.tomorrow(
+                              fontSize: 30,
+                              color: Color(0xFF990000),
+                              fontWeight: FontWeight.w500),
+                        )
                             : Text(
-                                "Turno de: " +
-                                    context.read<Jugadores>().player2,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.tomorrow(
-                                    fontSize: 30,
-                                    color: Color(0xFF990000),
-                                    fontWeight: FontWeight.w500),
-                              ),
+                          "Turno de: " +
+                              context.read<Jugadores>().player2,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.tomorrow(
+                              fontSize: 30,
+                              color: Color(0xFF990000),
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ),
                   ),
@@ -195,52 +205,56 @@ class Game extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 0.0,
-                        mainAxisSpacing: 0.0,
-                      ),
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () {
-                            if (flips[index].currentState?.isFront ?? true) {
-                              flips[index].currentState?.toggleCard();
-                              if (context.read<Jugadores>().first) {
-                                cruz.add(index);
-                              } else {
-                                circulo.add(index);
-                              }
-                              print(cruz);
-                              int winCruz = 0;
-                              bool winCru = false;
-                              int winCirculo = 0;
-                              bool winCir = false;
-                              for (var x in combinaciones) {
-                                for (var y in x) {
-                                  if (cruz.contains(y)) {
-                                    winCruz = winCruz + 1;
+                    child: Stack(
+                      children: [
+                        GridView.builder(
+                          shrinkWrap: true,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 0.0,
+                            mainAxisSpacing: 0.0,
+                          ),
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                if (flips[index].currentState?.isFront ?? true) {
+                                  flips[index].currentState?.toggleCard();
+                                  if (context.read<Jugadores>().first) {
+                                    cruz.add(index);
+                                  } else {
+                                    circulo.add(index);
                                   }
-                                  if (circulo.contains(y)) {
-                                    winCirculo = winCirculo + 1;
+                                  print(cruz);
+                                  int winCruz = 0;
+                                  bool winCru = false;
+                                  int winCirculo = 0;
+                                  bool winCir = false;
+                                  for (var x in combinaciones) {
+                                    for (var y in x) {
+                                      if (cruz.contains(y)) {
+                                        winCruz = winCruz + 1;
+                                      }
+                                      if (circulo.contains(y)) {
+                                        winCirculo = winCirculo + 1;
+                                      }
+                                    }
+                                    if (winCruz >= 3) {
+                                      winCru = true;
+                                      print(cruz);
+                                    }
+                                    if (winCirculo >= 3) {
+                                      print(circulo);
+                                      winCir = true;
+                                    }
+                                    winCruz = 0;
+                                    winCirculo = 0;
                                   }
-                                }
-                                if (winCruz >= 3) {
-                                  winCru = true;
-                                }
-                                if (winCirculo >= 3) {
-                                  winCir = true;
-                                }
-                                winCruz = 0;
-                                winCirculo = 0;
-                              }
 
-                              if (winCru) {
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (context) => AlertDialog(
+                                  if (winCru) {
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (context) => AlertDialog(
                                           title: Text("El ganador es: " +
                                               context
                                                   .read<Jugadores>()
@@ -252,23 +266,21 @@ class Game extends StatelessWidget {
                                                   circulo.clear();
                                                   Navigator.of(context).pop();
                                                   flips.forEach((element) {
-                                                    if (element.currentState
-                                                            ?.isFront ==
-                                                        false) {
-                                                      element.currentState
-                                                          ?.toggleCard();
+                                                    if (element
+                                                        .currentState?.isFront == false) {
+                                                      element.currentState?.toggleCard();
                                                     }
                                                   });
                                                 },
                                                 child: Text("Reiniciar"))
                                           ],
                                         ));
-                              }
-                              if (winCir) {
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (context) => AlertDialog(
+                                  }
+                                  if (winCir) {
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (context) => AlertDialog(
                                           title: Text("El ganador es: " +
                                               context
                                                   .read<Jugadores>()
@@ -281,50 +293,95 @@ class Game extends StatelessWidget {
 
                                                   Navigator.of(context).pop();
                                                   flips.forEach((element) {
-                                                    if (element.currentState
-                                                            ?.isFront ==
-                                                        false) {
-                                                      element.currentState
-                                                          ?.toggleCard();
+                                                    if (element
+                                                        .currentState?.isFront == false) {
+                                                      element.currentState?.toggleCard();
                                                     }
                                                   });
                                                 },
                                                 child: Text("Reiniciar"))
                                           ],
                                         ));
-                              }
+                                  }
 
-                              context.read<Jugadores>().first =
+                                  context.read<Jugadores>().first =
                                   !context.read<Jugadores>().first;
-                            }
-                          },
-                          child: Container(
-                            child: FlipCard(
-                              key: flips[index],
-                              front: const SizedBox(),
-                              back: Center(
-                                child: Selector<Jugadores, bool>(
-                                    selector: (_, t) => t.first,
-                                    builder: (_, t, __) => cruz.contains(index)
-                                        ? Text("X",
+                                }
+                              },
+                              child: Container(
+                                child: FlipCard(
+                                  key: flips[index],
+                                  front: const SizedBox(),
+                                  back: Center(
+                                    child: Selector<Jugadores, bool>(
+                                        selector: (_, t) => t.first,
+                                        builder: (_, t, __) => cruz.contains(index)
+                                            ? Text("X",
                                             style: GoogleFonts.balooDa(
                                                 fontSize: 50,
                                                 color: Colors.red))
-                                        : Text("O",
+                                            : Text("O",
                                             style: GoogleFonts.balooDa(
                                                 fontSize: 50,
                                                 color: Colors.redAccent))),
+                                  ),
+                                  onFlip: () {},
+                                  flipOnTouch: false,
+                                ),
+                                decoration: cards[index],
+                                height: MediaQuery.of(context).size.height * 0.2,
+                                width: MediaQuery.of(context).size.width * 0.3,
                               ),
-                              onFlip: () {},
-                              flipOnTouch: false,
-                            ),
-                            decoration: cards[index],
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                          ),
-                        );
-                      },
-                      itemCount: 9,
+                            );
+                          },
+                          itemCount: 9,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 50.0),
+                          child: Container(
+                            height:15.0,
+                            color: Colors.black,),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 170.0),
+                          child: Container(
+                            height:15.0,
+                            color: Colors.black,),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 270.0),
+                          child: Container(
+                            height:15.0,
+                            color: Colors.black,),
+                        ),
+
+                        Positioned(
+                          left: 50,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.48,
+                            width: 15.0,
+                            color: Colors.black,),
+                        ),
+                        Center(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.48,
+                            width: 15.0,
+                            color: Colors.black,),
+                        ),
+                        Positioned(
+                          right: 50,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.48,
+                            width: 15.0,
+                            color: Colors.black,),
+                        ),
+                        CustomPaint(
+                          painter: MyPainter(),
+                        ),
+                        CustomPaint(
+                          painter: MyPainter2(),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -384,5 +441,39 @@ class Game extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class MyPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p1 = Offset(10, 10);
+    final p2 = Offset(340, 340);
+    final paint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 15;
+    canvas.drawLine(p1, p2, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter old) {
+    return false;
+  }
+}
+
+class MyPainter2 extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p1 = Offset(340, 10);
+    final p2 = Offset(10, 340);
+    final paint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 15;
+    canvas.drawLine(p1, p2, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter old) {
+    return false;
   }
 }
