@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 class Jugadores with ChangeNotifier {
-   String _player1;
-   String _player2;
+   late String _player1;
+   late String _player2;
    String _champion = '';
    bool _first=true;
    bool _cruz = true;

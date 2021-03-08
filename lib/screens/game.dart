@@ -1,4 +1,4 @@
-import 'package:flip_card/flip_card.dart';
+import 'package:gato/otros/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gato/otros/fondo.dart';
@@ -19,7 +19,6 @@ class Game extends StatelessWidget {
   List<int> cruz = [];
   List<int> circulo = [];
 
-
   /*
      0   1   2
      3   4   5
@@ -28,16 +27,15 @@ class Game extends StatelessWidget {
    */
 
   List<List<int>> combinaciones = [
-    [0,1,2],
-    [0,3,6],
-    [6,7,8],
-    [2,5,8],
-    [0,4,8],
-    [6,4,2],
-    [3,4,5],
-    [1,4,7]
+    [0, 1, 2],
+    [0, 3, 6],
+    [6, 7, 8],
+    [2, 5, 8],
+    [0, 4, 8],
+    [6, 4, 2],
+    [3, 4, 5],
+    [1, 4, 7]
   ];
-
 
   List<BoxDecoration> cards = [
     BoxDecoration(
@@ -172,14 +170,22 @@ class Game extends StatelessWidget {
                         selector: (_, first) => first.first,
                         builder: (context, first, __) => first
                             ? Text(
-                                "Turno de: " + context.read<Jugadores>().player1,
+                                "Turno de: " +
+                                    context.read<Jugadores>().player1,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.tomorrow(fontSize: 30, color: Color(0xFF990000), fontWeight: FontWeight.w500),
+                                style: GoogleFonts.tomorrow(
+                                    fontSize: 30,
+                                    color: Color(0xFF990000),
+                                    fontWeight: FontWeight.w500),
                               )
                             : Text(
-                                "Turno de: " + context.read<Jugadores>().player2,
+                                "Turno de: " +
+                                    context.read<Jugadores>().player2,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.tomorrow(fontSize: 30, color: Color(0xFF990000), fontWeight: FontWeight.w500),
+                                style: GoogleFonts.tomorrow(
+                                    fontSize: 30,
+                                    color: Color(0xFF990000),
+                                    fontWeight: FontWeight.w500),
                               ),
                       ),
                     ),
@@ -200,7 +206,7 @@ class Game extends StatelessWidget {
                         return InkWell(
                           onTap: () {
                             if (flips[index].currentState?.isFront ?? true) {
-                              flips[index].currentState.toggleCard();
+                              flips[index].currentState?.toggleCard();
                               if (context.read<Jugadores>().first) {
                                 cruz.add(index);
                               } else {
@@ -211,64 +217,81 @@ class Game extends StatelessWidget {
                               bool winCru = false;
                               int winCirculo = 0;
                               bool winCir = false;
-                              for (var x in combinaciones){
-                                for (var y in x){
-                                  if(cruz.contains(y)){
+                              for (var x in combinaciones) {
+                                for (var y in x) {
+                                  if (cruz.contains(y)) {
                                     winCruz = winCruz + 1;
                                   }
-                                  if(circulo.contains(y)){
+                                  if (circulo.contains(y)) {
                                     winCirculo = winCirculo + 1;
                                   }
                                 }
-                                if(winCruz>=3){
+                                if (winCruz >= 3) {
                                   winCru = true;
                                 }
-                                if(winCirculo>=3){
+                                if (winCirculo >= 3) {
                                   winCir = true;
                                 }
                                 winCruz = 0;
                                 winCirculo = 0;
-
                               }
 
-                              if(winCru){
+                              if (winCru) {
                                 showDialog(
                                     barrierDismissible: false,
-                                    context: context, builder:(context)=>AlertDialog(
-                                  title: Text("El ganador es: "+context.read<Jugadores>().player1),
-                                  actions: [
-                                    TextButton(onPressed: (){
-                                      cruz.clear();
-                                      circulo.clear();
-                                      Navigator.of(context).pop();
-                                      flips.forEach((element) {
-                                        if(!element.currentState.isFront){
-                                          element.currentState.toggleCard();
-                                        }
-                                      });
-                                    }, child: Text("Reiniciar"))
-                                  ],
-                                ));
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text("El ganador es: " +
+                                              context
+                                                  .read<Jugadores>()
+                                                  .player1),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  cruz.clear();
+                                                  circulo.clear();
+                                                  Navigator.of(context).pop();
+                                                  flips.forEach((element) {
+                                                    if (element.currentState
+                                                            ?.isFront ==
+                                                        false) {
+                                                      element.currentState
+                                                          ?.toggleCard();
+                                                    }
+                                                  });
+                                                },
+                                                child: Text("Reiniciar"))
+                                          ],
+                                        ));
                               }
-                              if(winCir){
+                              if (winCir) {
                                 showDialog(
                                     barrierDismissible: false,
-                                    context: context, builder:(context)=>AlertDialog(
-                                  title: Text("El ganador es: "+context.read<Jugadores>().player2),
-                                  actions: [
-                                    TextButton(onPressed: (){
-                                      cruz.clear();
-                                      circulo.clear();
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text("El ganador es: " +
+                                              context
+                                                  .read<Jugadores>()
+                                                  .player2),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  cruz.clear();
+                                                  circulo.clear();
 
-                                      Navigator.of(context).pop();
-                                      flips.forEach((element) {
-                                        if(!element.currentState.isFront){
-                                          element.currentState.toggleCard();
-                                        }
-                                      });
-                                    }, child: Text("Reiniciar"))
-                                  ],
-                                ));
+                                                  Navigator.of(context).pop();
+                                                  flips.forEach((element) {
+                                                    if (element.currentState
+                                                            ?.isFront ==
+                                                        false) {
+                                                      element.currentState
+                                                          ?.toggleCard();
+                                                    }
+                                                  });
+                                                },
+                                                child: Text("Reiniciar"))
+                                          ],
+                                        ));
                               }
 
                               context.read<Jugadores>().first =
@@ -283,8 +306,14 @@ class Game extends StatelessWidget {
                                 child: Selector<Jugadores, bool>(
                                     selector: (_, t) => t.first,
                                     builder: (_, t, __) => cruz.contains(index)
-                                        ? Text("X", style: GoogleFonts.balooDa(fontSize: 50, color: Colors.red))
-                                        : Text("O", style: GoogleFonts.balooDa(fontSize: 50, color: Colors.redAccent))),
+                                        ? Text("X",
+                                            style: GoogleFonts.balooDa(
+                                                fontSize: 50,
+                                                color: Colors.red))
+                                        : Text("O",
+                                            style: GoogleFonts.balooDa(
+                                                fontSize: 50,
+                                                color: Colors.redAccent))),
                               ),
                               onFlip: () {},
                               flipOnTouch: false,
@@ -313,7 +342,13 @@ class Game extends StatelessWidget {
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("Regresar", style: GoogleFonts.arvo(fontSize: 20, color: Color(0xFF990000), fontWeight: FontWeight.w700),),
+                            child: Text(
+                              "Regresar",
+                              style: GoogleFonts.arvo(
+                                  fontSize: 20,
+                                  color: Color(0xFF990000),
+                                  fontWeight: FontWeight.w700),
+                            ),
                           ),
                         ),
                       ),
@@ -323,14 +358,20 @@ class Game extends StatelessWidget {
                             cruz.clear();
                             circulo.clear();
                             flips.forEach((element) {
-                              if(!element.currentState.isFront){
-                                element.currentState.toggleCard();
+                              if (element.currentState?.isFront == false) {
+                                element.currentState?.toggleCard();
                               }
                             });
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("Reiniciar", style: GoogleFonts.arvo(fontSize: 20, color: Color(0xFF990000), fontWeight: FontWeight.w700),),
+                            child: Text(
+                              "Reiniciar",
+                              style: GoogleFonts.arvo(
+                                  fontSize: 20,
+                                  color: Color(0xFF990000),
+                                  fontWeight: FontWeight.w700),
+                            ),
                           ),
                         ),
                       ),
