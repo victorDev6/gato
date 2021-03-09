@@ -141,16 +141,6 @@ class Game extends StatelessWidget {
   ];
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final p1 = Offset(50, 50);
-    final p2 = Offset(250, 150);
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 4;
-    canvas.drawLine(p1, p2, paint);
-  }
-
-  @override
   Widget build(BuildContext context) {
     List<GlobalKey<FlipCardState>> flips = [
       cardKey0,
@@ -313,17 +303,39 @@ class Game extends StatelessWidget {
                                   key: flips[index],
                                   front: const SizedBox(),
                                   back: Center(
-                                    child: Selector<Jugadores, bool>(
-                                        selector: (_, t) => t.first,
-                                        builder: (_, t, __) => cruz.contains(index)
-                                            ? Text("X",
-                                            style: GoogleFonts.balooDa(
-                                                fontSize: 50,
-                                                color: Colors.red))
-                                            : Text("O",
-                                            style: GoogleFonts.balooDa(
-                                                fontSize: 50,
-                                                color: Colors.redAccent))),
+                                    child: Stack(
+                                      children: [
+                                        Center(
+                                          child: Selector<Jugadores, bool>(
+                                              selector: (_, t) => t.first,
+                                              builder: (_, t, __) => cruz.contains(index)
+                                                  ? Text("X",
+                                                  style: GoogleFonts.balooDa(
+                                                      fontSize: 50,
+                                                      color: Colors.red))
+                                                  : Text("O",
+                                                  style: GoogleFonts.balooDa(
+                                                      fontSize: 50,
+                                                      color: Colors.redAccent))),
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            height:15.0,
+                                            color: Colors.black,),
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            width:15.0,
+                                            color: Colors.black,),
+                                        ),
+                                        CustomPaint(
+                                          painter: MyPainter(),
+                                        ),
+                                        CustomPaint(
+                                          painter: MyPainter2(),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                   onFlip: () {},
                                   flipOnTouch: false,
@@ -336,24 +348,19 @@ class Game extends StatelessWidget {
                           },
                           itemCount: 9,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 50.0),
-                          child: Container(
-                            height:15.0,
-                            color: Colors.black,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 170.0),
-                          child: Container(
-                            height:15.0,
-                            color: Colors.black,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 270.0),
-                          child: Container(
-                            height:15.0,
-                            color: Colors.black,),
-                        ),
+
+                        // is ok
+
+                        /*Container(
+                          height:15.0,
+                          color: Colors.black,),
+                        Container(
+                          height:15.0,
+                          color: Colors.black,),
+                        Container(
+                          height:15.0,
+                          color: Colors.black,),
+
 
                         Positioned(
                           left: 50,
@@ -380,7 +387,7 @@ class Game extends StatelessWidget {
                         ),
                         CustomPaint(
                           painter: MyPainter2(),
-                        ),
+                        ),*/
                       ],
                     ),
                   ),
@@ -447,8 +454,8 @@ class Game extends StatelessWidget {
 class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final p1 = Offset(10, 10);
-    final p2 = Offset(340, 340);
+    final p1 = Offset(0, 0);
+    final p2 = Offset(115, 115);
     final paint = Paint()
       ..color = Colors.black
       ..strokeWidth = 15;
@@ -464,8 +471,8 @@ class MyPainter extends CustomPainter {
 class MyPainter2 extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final p1 = Offset(340, 10);
-    final p2 = Offset(10, 340);
+    final p1 = Offset(0, 120);
+    final p2 = Offset(120, 0);
     final paint = Paint()
       ..color = Colors.black
       ..strokeWidth = 15;
