@@ -21,13 +21,21 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    print(Provider.of<Jugadores>(context, listen: false).player1);
-    print(Provider.of<Jugadores>(context, listen: false).player2);
     return Scaffold(
       body: CustomPaint(
         painter: BluePainter(),
         child: Stack(
           children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 80),
+                child: Image.asset(
+                  'assets/logo.png',
+                  height: 150,
+                ),
+              ),
+            ),
             Align(
               alignment: Alignment.center,
               child: Column(
@@ -58,7 +66,7 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Game()),
+                        MaterialPageRoute(builder: (context) => Game(context)),
                       );
                     },
                     child: Padding(
@@ -73,16 +81,6 @@ class _HomeState extends State<Home> {
                     ),
                   )
                 ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 50),
-                child: Image.asset(
-                  'assets/logo.png',
-                  height: 150,
-                ),
               ),
             ),
           ],

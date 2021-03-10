@@ -1,3 +1,4 @@
+import 'package:gato/otros/dialogGanador.dart';
 import 'package:gato/otros/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class Game extends StatelessWidget {
   GlobalKey<FlipCardState> cardKey8 = GlobalKey<FlipCardState>();
   List<int> cruz = [];
   List<int> circulo = [];
-
+  late List<GlobalKey<FlipCardState>> flips;
 
   /*
      0   1   2
@@ -140,9 +141,28 @@ class Game extends StatelessWidget {
     )
   ];
 
+  BuildContext context;
+  Game(BuildContext this.context);
+
+  reiniciar() {
+    cruz.clear();
+    circulo.clear();
+    Navigator.of(context)
+        .pop();
+    flips.forEach((element) {
+      if (element.currentState
+          ?.isFront ==
+          false) {
+        element.currentState
+            ?.toggleCard();
+      }
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    List<GlobalKey<FlipCardState>> flips = [
+    flips = [
       cardKey0,
       cardKey1,
       cardKey2,
@@ -153,6 +173,7 @@ class Game extends StatelessWidget {
       cardKey7,
       cardKey8,
     ];
+
     return Scaffold(
       body: CustomPaint(
         painter: BluePainter(),
@@ -170,23 +191,23 @@ class Game extends StatelessWidget {
                         selector: (_, first) => first.first,
                         builder: (context, first, __) => first
                             ? Text(
-                          "Turno de: " +
-                              context.read<Jugadores>().player1,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.tomorrow(
-                              fontSize: 30,
-                              color: Color(0xFF990000),
-                              fontWeight: FontWeight.w500),
-                        )
+                                "Turno de: " +
+                                    context.read<Jugadores>().player1,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.tomorrow(
+                                    fontSize: 30,
+                                    color: Color(0xFF990000),
+                                    fontWeight: FontWeight.w500),
+                              )
                             : Text(
-                          "Turno de: " +
-                              context.read<Jugadores>().player2,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.tomorrow(
-                              fontSize: 30,
-                              color: Color(0xFF990000),
-                              fontWeight: FontWeight.w500),
-                        ),
+                                "Turno de: " +
+                                    context.read<Jugadores>().player2,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.tomorrow(
+                                    fontSize: 30,
+                                    color: Color(0xFF990000),
+                                    fontWeight: FontWeight.w500),
+                              ),
                       ),
                     ),
                   ),
@@ -199,7 +220,8 @@ class Game extends StatelessWidget {
                       children: [
                         GridView.builder(
                           shrinkWrap: true,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
                             crossAxisSpacing: 0.0,
                             mainAxisSpacing: 0.0,
@@ -207,7 +229,8 @@ class Game extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
-                                if (flips[index].currentState?.isFront ?? true) {
+                                if (flips[index].currentState?.isFront ??
+                                    true) {
                                   flips[index].currentState?.toggleCard();
                                   if (context.read<Jugadores>().first) {
                                     cruz.add(index);
@@ -241,61 +264,14 @@ class Game extends StatelessWidget {
                                   }
 
                                   if (winCru) {
-                                    showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: Text("El ganador es: " +
-                                              context
-                                                  .read<Jugadores>()
-                                                  .player1),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  cruz.clear();
-                                                  circulo.clear();
-                                                  Navigator.of(context).pop();
-                                                  flips.forEach((element) {
-                                                    if (element
-                                                        .currentState?.isFront == false) {
-                                                      element.currentState?.toggleCard();
-                                                    }
-                                                  });
-                                                },
-                                                child: Text("Reiniciar"))
-                                          ],
-                                        ));
+                                    DialogGanador().DialogWinner(context, context.read<Jugadores>().player1, this);
                                   }
                                   if (winCir) {
-                                    showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: Text("El ganador es: " +
-                                              context
-                                                  .read<Jugadores>()
-                                                  .player2),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  cruz.clear();
-                                                  circulo.clear();
-
-                                                  Navigator.of(context).pop();
-                                                  flips.forEach((element) {
-                                                    if (element
-                                                        .currentState?.isFront == false) {
-                                                      element.currentState?.toggleCard();
-                                                    }
-                                                  });
-                                                },
-                                                child: Text("Reiniciar"))
-                                          ],
-                                        ));
+                                    DialogGanador().DialogWinner(context, context.read<Jugadores>().player2, this);
                                   }
 
                                   context.read<Jugadores>().first =
-                                  !context.read<Jugadores>().first;
+                                      !context.read<Jugadores>().first;
                                 }
                               },
                               child: Container(
@@ -308,17 +284,24 @@ class Game extends StatelessWidget {
                                         Center(
                                           child: Selector<Jugadores, bool>(
                                               selector: (_, t) => t.first,
-                                              builder: (_, t, __) => cruz.contains(index)
+                                              builder: (_, t, __) => cruz
+                                                      .contains(index)
                                                   ? Text("X",
-                                                  style: GoogleFonts.balooDa(
-                                                      fontSize: 50,
-                                                      color: Colors.red))
-                                                  : Text("O",
-                                                  style: GoogleFonts.balooDa(
-                                                      fontSize: 50,
-                                                      color: Colors.redAccent))),
+                                                      style: GoogleFonts
+                                                          .balooDa(
+                                                              fontSize: 50,
+                                                              color: Colors
+                                                                  .red))
+                                                  : Text(
+                                                      "O",
+                                                      style: GoogleFonts
+                                                          .balooDa(
+                                                              fontSize: 50,
+                                                              color: Colors
+                                                                  .redAccent))),
                                         ),
-                                        Center(
+
+                                        /*Center(
                                           child: Container(
                                             height:15.0,
                                             color: Colors.black,),
@@ -333,7 +316,7 @@ class Game extends StatelessWidget {
                                         ),
                                         CustomPaint(
                                           painter: MyPainter2(),
-                                        )
+                                        )*/
                                       ],
                                     ),
                                   ),
@@ -341,7 +324,8 @@ class Game extends StatelessWidget {
                                   flipOnTouch: false,
                                 ),
                                 decoration: cards[index],
-                                height: MediaQuery.of(context).size.height * 0.2,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
                                 width: MediaQuery.of(context).size.width * 0.3,
                               ),
                             );
@@ -349,38 +333,40 @@ class Game extends StatelessWidget {
                           itemCount: 9,
                         ),
 
-                        // is ok
-
                         /*Container(
-                          height:15.0,
-                          color: Colors.black,),
+                          height: 15.0,
+                          color: Colors.black,
+                        ),
                         Container(
-                          height:15.0,
-                          color: Colors.black,),
+                          height: 15.0,
+                          color: Colors.black,
+                        ),
                         Container(
-                          height:15.0,
-                          color: Colors.black,),
-
-
+                          height: 15.0,
+                          color: Colors.black,
+                        ),
                         Positioned(
                           left: 50,
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.48,
                             width: 15.0,
-                            color: Colors.black,),
+                            color: Colors.black,
+                          ),
                         ),
                         Center(
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.48,
                             width: 15.0,
-                            color: Colors.black,),
+                            color: Colors.black,
+                          ),
                         ),
                         Positioned(
                           right: 50,
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.48,
                             width: 15.0,
-                            color: Colors.black,),
+                            color: Colors.black,
+                          ),
                         ),
                         CustomPaint(
                           painter: MyPainter(),
@@ -455,7 +441,7 @@ class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final p1 = Offset(0, 0);
-    final p2 = Offset(115, 115);
+    final p2 = Offset(120, 120);
     final paint = Paint()
       ..color = Colors.black
       ..strokeWidth = 15;
